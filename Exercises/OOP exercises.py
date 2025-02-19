@@ -63,3 +63,42 @@ class Enemy:
         screen.blit(self.sprite, self.rect)  # Draw the enemy on the screen
 
 # Q4: integrating classes into pygame loop
+
+# Create instances
+player = Player(100, 100, 4)
+enemy = Enemy(300, 100, 2)
+player_health = 100
+
+# Game loop
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    clock.tick(FPS)
+    screen.fill(WHITE)
+
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Player movement
+    keys = pygame.key.get_pressed()
+    player.move(keys)
+
+    # Enemy movement towards player
+    enemy.move_towards(player.x, player.y)
+
+    # Check collision (simple AABB collision detection)
+    if player.rect.colliderect(enemy.rect):
+        player_health -= 1  # Reduce health if enemy touches player
+        print(f"Player Health: {player_health}")
+
+    # Draw everything
+    player.draw(screen)
+    enemy.draw(screen)
+
+    # Update screen
+    pygame.display.flip()
+
+pygame.quit()
