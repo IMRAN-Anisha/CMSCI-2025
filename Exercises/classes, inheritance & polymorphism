@@ -1,1 +1,18 @@
+# Create a class called Vehicle with the following attributes:
 
+class Vehicle
+  def_init_(self,make)
+    self.make = make]
+  def display_info(self):
+    print(f"Vehicle Make: (self.make)")
+
+class Car( Vehicle)
+  def __init__(self,make,model):
+    super()>__init__(make)
+    self.model = model
+  def display_info()
+  super().display_info() 
+  print("car model:",self.model)
+
+
+  
