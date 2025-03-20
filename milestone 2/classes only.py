@@ -48,7 +48,8 @@ class GameManager:
         elif self.player.performance == "struggling":
             print("Player is struggling. Adjusting difficulty.")
 
-
+# Might not include anymore in final project, SUBJECT TO CHANGE.
+'''
 class PuzzleFactory:
     @staticmethod
     def create_puzzle(puzzle_type="math"):
@@ -60,7 +61,7 @@ class PuzzleFactory:
             return LogicPuzzle()
         else:
             raise ValueError("Invalid puzzle type")
-
+'''
 
 import time
 
