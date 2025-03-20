@@ -23,7 +23,9 @@ class DFSSolver:
                     stack.append((nx, ny, path + [(nx, ny)]))
 
         return None  # No path found
-
+    
+#this part of the code is still not working.
+'''
 # generate a maze using DFS-based random traversal
 def generate_maze(width, height):
     # Initialize maze with walls ('#')
@@ -92,3 +94,5 @@ if __name__ == "__main__":
     start, end = (1, 1), (height-2, width-2)  # Define start and end positions
     path = dfs_solve_maze(maze, start, end)  # Solve maze using DFS
     print_maze(maze, path)  # Print maze with solution path
+
+'''
