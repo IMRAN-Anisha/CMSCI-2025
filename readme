@@ -1,2 +1,76 @@
 YR 12 COMPUTER SCIENCE - Puzzle GAME 
 IMRAN Anisha
+
+----------------------------------------------------------Overview------------------------------------------------------------------------------
+This project is a maze puzzle game that utilizes Object-Oriented Programming (OOP) and the Depth-First Search (DFS) algorithm
+for procedural maze generation and pathfinding. The game is built using Python and Pygame, and it emphasizes structured game design principles.
+
+---------------------------------------------------------Features-------------------------------------------------------------------------------
+
+1. Procedural Maze Generation: The DFS algorithm is used to generate unique mazes dynamically.
+
+2. Player Navigation: Players can move through the maze using arrow keys.
+
+3. AI-Driven Hint System: The game provides hints based on DFS traversal.
+
+4. Adaptive Difficulty: The AI system adjusts the puzzle complexity based on player performance.
+
+------------------------------------------------------Object-Oriented Design---------------------------------------------------------------------
+
+The game follows OOP principles to maintain modularity and scalability:
+
+Encapsulation, Abstraction, Inheritance, Composition
+
+------------------------------------------Depth-First Search (DFS) in Maze Generation------------------------------------------------------------
+
+DFS is a powerful algorithm for creating and solving mazes:
+
+Maze Generation: DFS generates mazes by exploring paths deeply before backtracking, ensuring a solvable structure.
+
+Solution Pathfinding: DFS can traverse the maze to find a solution from the start to the goal.
+
+-------------------------------------------------------AI Adaptive System------------------------------------------------------------------------
+
+The AI system adjusts difficulty and provides hints based on DFS pathfinding.
+
+Key Features:
+
+1. Provide Hints: Analyzes the solution path and suggests the next step.
+
+2. Adjust Difficulty: Monitors player performance and modifies maze complexity accordingly.
+
+---------------------------------------------------Error Handling Strategy-----------------------------------------------------------------------
+
+To ensure the best playing experince the following factors are considered:
+
+Invalid Moves: Prevents the player from moving through walls or out of bounds.
+
+File I/O Errors: Ensures smooth loading and saving of game states.
+
+Unsolvable Mazes: Implements safeguards to regenerate the maze if an issue is detected.
+
+------------------------------------------------------Testing Strategy---------------------------------------------------------------------------
+
+To counteract those particular situations, the following has been done to ensure the best user experience:
+
+Unit Testing: Verifies individual methods, such as player movement and maze generation.
+
+Integration Testing: Ensures components (e.g., AI, DFS, Player) work together properly.
+
+System Testing: Simulates real user behavior to validate game flow and error handling.
+
+---------------------------------------------------Ethical Considerations-----------------------------------------------------------------------
+
+Fair Gameplay: The AI ensures puzzles remain challenging but solvable.
+
+Data Privacy: No unnecessary user data is collected.
+
+Use of Assets: The game only uses public domain or self-created assets.
+
+--------------------------------------------------Future Enhancements---------------------------------------------------------------------------
+
+1. More Puzzle Variations: Implement additional puzzle types using the OOP structure.
+
+2. Multiplayer Mode: Introduce cooperative maze-solving challenges.
+
+3. Enhanced AI: Improve the hint system with machine learning techniques.
