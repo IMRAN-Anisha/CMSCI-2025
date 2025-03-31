@@ -1,0 +1,14 @@
+game components:
+1. graphics
+2. models
+3. tests
+4. utilities
+5. resuable UI 
+6. classes
+7. DFS
+8. 3 different games
+9. difficulty - use time? alter puzzle?
+10. 
+
+
+code has been refactored to be more organised.

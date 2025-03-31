@@ -1,0 +1,10 @@
+# src/constants.py
+WIDTH, HEIGHT = 600, 600
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (180, 180, 180)
+BLUE = (50, 50, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+GRID_SIZE = 21
+CELL_SIZE = WIDTH // GRID_SIZE
