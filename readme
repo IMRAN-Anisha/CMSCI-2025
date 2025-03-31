@@ -2,7 +2,7 @@ YR 12 COMPUTER SCIENCE - Puzzle GAME
 IMRAN Anisha
 DOCUMENTATION LINK:    ......
 
-----------------------------------------------Overview----------------------------------------------------
+-------------------------------------------------Overview-----------------------------------------------------
 This project is a maze puzzle game that utilizes Object-Oriented Programming (OOP) 
 and the Depth-First Search (DFS) algorithm
 for procedural maze generation and pathfinding. The game is built using Python and Pygame,
