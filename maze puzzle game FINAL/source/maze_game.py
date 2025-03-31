@@ -39,9 +39,9 @@ class MazeGame:
 
     def show_game_mode_menu(self):
         buttons = [
-            Button("Mode 1", 200, 150, 200, 50, BLUE, GRAY, self.show_difficulty_menu),
-            Button("Mode 2", 200, 250, 200, 50, BLUE, GRAY, self.show_difficulty_menu),
-            Button("Mode 3", 200, 350, 200, 50, BLUE, GRAY, self.show_difficulty_menu),
+            Button("Puzzle Game", 200, 150, 200, 50, BLUE, GRAY, self.show_difficulty_menu),
+            Button("Math Game", 200, 250, 200, 50, BLUE, GRAY, self.show_difficulty_menu),
+            Button("Word Game", 200, 350, 200, 50, BLUE, GRAY, self.show_difficulty_menu),
             Button("Back", 200, 450, 200, 50, BLUE, GRAY, self.back_to_menu)
         ]
         self.menu_loop(buttons)
@@ -57,7 +57,7 @@ class MazeGame:
 
     def menu_loop(self, buttons):
         while self.running:
-            self.screen.fill(WHITE)
+            self.screen.fill(BLACK)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
