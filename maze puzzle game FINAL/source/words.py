@@ -22,3 +22,15 @@ Four_LETTER = [
     "corn", "cost", "crew", "crop", "crow", "cure", "curl", "cute", "damp", "dare",
     "dark", "dash", "date", "dawn", "deal", "dear", "deck", "deep", "deer", "desk"
 ]
+
+Five_Letter = [
+    "apple", "about", "above", "adopt", "agree", "alert", "alive", "allow", "alone", "along",
+    "alter", "amber", "angel", "angry", "ankle", "apron", "arrow", "asset", "audio", "audit",
+    "award", "bacon", "badge", "baker", "basic", "beach", "beard", "beast", "begin", "being",
+    "below", "bench", "birth", "black", "blade", "blame", "blank", "blast", "blend", "blind",
+    "block", "blood", "board", "boast", "bonus", "boost", "bound", "brain", "brake", "brand",
+    "brave", "bread", "break", "brick", "bride", "brief", "bring", "broad", "brown", "brush",
+    "build", "bunch", "burst", "cabin", "cable", "camel", "canal", "candy", "carry", "catch",
+    "cause", "chain", "chair", "charm", "chart", "chase", "cheap", "check", "cheek", "chest",
+    "chief", "child", "chill", "claim", "class", "clean", "clear", "climb", "clock", "close"
+]

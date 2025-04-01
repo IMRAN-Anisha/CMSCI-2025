@@ -1,6 +1,8 @@
+# source/main.py
 import pygame
 from source.UI import MainMenu, GameSelectionMenu, InstructionsScreen
 from source.maze_game import MazeGame
+from games.word_game import WordGame  # Add this import
 from source.constants import WIDTH, HEIGHT
 
 def run_game():
@@ -21,12 +23,13 @@ def run_game():
                 game = MazeGame(screen, clock)
                 game.run()
             elif game_choice == "word":
-                print("game")
+                game = WordGame(screen, clock)  #here
+                game.run()
             elif game_choice == "number":
-                print("game")
+                print("game")  # change
         if next_action == "instructions":
             instructions = InstructionsScreen(screen)
-            instructions.run()  # Runs but doesn't return to menu properly yet
+            instructions.run()  # fix this ASAP
 
     pygame.quit()
 
