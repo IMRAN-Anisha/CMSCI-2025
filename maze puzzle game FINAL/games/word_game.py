@@ -1,17 +1,46 @@
 import pygame
 import sys
 import random
-from source.UI import Button
-from source.words import *
+from source.constants import WHITE,BLACK,GRAY,GREEN,YELLOW,DARK_GRAY,BLUE
 
 pygame.init()
+WIDTH, HEIGHT = 600, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Word Adventure")
+clock = pygame.time.Clock()
+
+# dummy lists 
+THREE_LETTER = ["CAT", "DOG", "BAT"]
+FOUR_LETTER = ["CAKE", "BOOK", "FISH"]
+FIVE_LETTER = ["APPLE", "BREAD", "CANDY"]
+
+class Button:
+    def __init__(self, text, x, y, width, height, color, hover_color, action=None):
+        self.text = text
+        self.rect = pygame.Rect(x, y, width, height)
+        self.color = color
+        self.hover_color = hover_color
+        self.action = action
+        self.font = pygame.font.Font(None, 36)
+
+    def draw(self, screen):
+        mouse_pos = pygame.mouse.get_pos()
+        color = self.hover_color if self.rect.collidepoint(mouse_pos) else self.color
+        pygame.draw.rect(screen, color, self.rect, border_radius=10)
+        text_surf = self.font.render(self.text, True, WHITE)
+        text_rect = text_surf.get_rect(center=self.rect.center)
+        screen.blit(text_surf, text_rect)
+
+    def is_clicked(self, event):
+        return event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos)
 
 class WordGame:
-    def __init__(self, screen, clock):
+    def __init__(self):
         self.screen = screen
         self.clock = clock
         self.running = True
         self.font = pygame.font.Font(None, 50)
+        self.tile_font = pygame.font.Font(None, 60)
         self.word_length = 5
         self.correct_word = ""
         self.guesses = [[] for _ in range(6)]
@@ -19,27 +48,35 @@ class WordGame:
         self.guess_string = ""
         self.guess_count = 0
         self.game_result = ""
+        self.tile_size = 60
+        self.tile_spacing = 5
 
     def run(self):
         self.show_difficulty_menu()
 
     def show_difficulty_menu(self):
-        print("Showing difficulty menu")  # Debug
         buttons = [
-            Button("Easy (3 letters)", 200, 200, 200, 50, (50, 50, 255), (180, 180, 180), lambda: self.start_game(3)),
-            Button("Medium (4 letters)", 200, 300, 200, 50, (50, 50, 255), (180, 180, 180), lambda: self.start_game(4)),
-            Button("Hard (5 letters)", 200, 400, 200, 50, (50, 50, 255), (180, 180, 180), lambda: self.start_game(5)),
-            Button("Back", 200, 500, 200, 50, (50, 50, 255), (180, 180, 180), self.back_to_menu)
+            Button("Easy (3 letters)", 200, 200, 200, 50, BLUE, GRAY, lambda: self.start_game(3)),
+            Button("Medium (4 letters)", 200, 300, 200, 50, BLUE, GRAY, lambda: self.start_game(4)),
+            Button("Hard (5 letters)", 200, 400, 200, 50, BLUE, GRAY, lambda: self.start_game(5)),
+            Button("Quit", 200, 500, 200, 50, BLUE, GRAY, self.quit_game)
         ]
+        self.menu_loop(buttons)
+
+    def menu_loop(self, buttons):
         while self.running:
-            self.screen.fill((0, 0, 0))
+            self.screen.fill(BLACK)
+            title = self.font.render("Word Adventure", True, WHITE)
+            self.screen.blit(title, (WIDTH//2 - title.get_width()//2, 50))
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    self.quit_game()
                 for button in buttons:
                     if button.is_clicked(event):
                         button.action()
                         return
+            
             for button in buttons:
                 button.draw(self.screen)
             pygame.display.flip()
@@ -47,84 +84,71 @@ class WordGame:
 
     def start_game(self, length):
         self.word_length = length
-        print(f"Starting game with {length} letters")  # Debug
-        try:
-            if length == 3:
-                self.correct_word = random.choice(WORDS_3).upper()
-            elif length == 4:
-                self.correct_word = random.choice(WORDS_4).upper()
-            else:
-                self.correct_word = random.choice(WORDS_5).upper()
-            print(f"Correct word set to: {self.correct_word}")  # Debug
-        except NameError as e:
-            print(f"Error with word lists: {e}")
-            self.correct_word = "TEST"  # Fallback
+        self.guess_count = 0
+        self.current_guess = []
+        self.guess_string = ""
+        self.game_result = ""
+        self.guesses = [[] for _ in range(6)]
+        
+        if length == 3:
+            self.correct_word = random.choice(THREE_LETTER).upper()
+        elif length == 4:
+            self.correct_word = random.choice(FOUR_LETTER).upper()
+        else:
+            self.correct_word = random.choice(FIVE_LETTER).upper()
+        
         self.game_loop()
 
-    def back_to_menu(self):
+    def quit_game(self):
         self.running = False
+        pygame.quit()
+        sys.exit()
 
     def game_loop(self):
-        print("Entering game loop")  # Debug
         while self.running:
-            self.screen.fill((0, 0, 0))
-            print("Drawing frame")  # Debug
-            test_text = self.font.render("Game is working", True, (255, 255, 255))
-            self.screen.blit(test_text, (200, 50))
-            if self.game_result != "":
-                self.show_result()
+            self.screen.fill(BLACK)
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    self.quit_game()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        pygame.quit()
-                        sys.exit()
-                    elif event.key == pygame.K_RETURN:
+                    if event.key == pygame.K_RETURN:
                         if self.game_result != "":
-                            self.reset()
+                            self.show_difficulty_menu()
                         elif len(self.guess_string) == self.word_length:
                             self.check_guess()
                     elif event.key == pygame.K_BACKSPACE:
-                        if len(self.guess_string) > 0:
-                            self.delete_letter()
-                    else:
-                        key = event.unicode.upper()
-                        if key in "QWERTYUIOPASDFGHJKLZXCVBNM" and len(self.guess_string) < self.word_length:
-                            self.add_letter(key)
+                        self.delete_letter()
+                    elif event.unicode.upper() in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" and len(self.guess_string) < self.word_length:
+                        self.add_letter(event.unicode.upper())
+            
             self.draw()
             pygame.display.flip()
             self.clock.tick(60)
-        print("Exiting game loop")  # Debug
 
     def add_letter(self, letter):
         self.guess_string += letter
-        x_pos = 200 + len(self.current_guess) * 60
-        text = self.font.render(letter, True, (255, 255, 255))
-        self.current_guess.append({"letter": letter, "x": x_pos, "color": "white"})
-        print(f"Added letter: {letter}, Guess: {self.guess_string}")  # Debug
-        self.draw()
+        self.current_guess.append({"letter": letter, "color": WHITE})
 
     def delete_letter(self):
-        self.guess_string = self.guess_string[:-1]
-        self.current_guess.pop()
-        print(f"Deleted letter, Guess: {self.guess_string}")  # Debug
+        if self.guess_string:
+            self.guess_string = self.guess_string[:-1]
+            self.current_guess.pop()
 
     def check_guess(self):
-        guess = self.guess_string.lower()
-        print(f"Checking guess: {guess} against {self.correct_word}")  # Debug
-        if guess == self.correct_word.lower():
+        if self.guess_string.lower() == self.correct_word.lower():
             self.game_result = "W"
             for i, letter in enumerate(self.current_guess):
-                letter["color"] = "#6aaa64"
+                letter["color"] = GREEN
         else:
             for i, letter in enumerate(self.current_guess):
                 if i < len(self.correct_word) and letter["letter"] == self.correct_word[i]:
-                    letter["color"] = "#6aaa64"
+                    letter["color"] = GREEN
                 elif letter["letter"] in self.correct_word:
-                    letter["color"] = "#c9b458"
+                    letter["color"] = YELLOW
                 else:
-                    letter["color"] = "#787c7e"
+                    letter["color"] = DARK_GRAY
+            
             self.guesses[self.guess_count] = self.current_guess
             self.guess_count += 1
             self.current_guess = []
@@ -133,33 +157,49 @@ class WordGame:
                 self.game_result = "L"
 
     def draw(self):
-        # Draw past guesses with colors
-        y_offset = 100
-        for i, guess in enumerate(self.guesses[:self.guess_count]):
+        # Draw title
+        title = self.font.render("Word Adventure", True, WHITE)
+        self.screen.blit(title, (WIDTH//2 - title.get_width()//2, 20))
+
+        # Calculate starting position to center tiles
+        total_width = self.word_length * (self.tile_size + self.tile_spacing) - self.tile_spacing
+        start_x = (WIDTH - total_width) // 2
+        start_y = 100
+
+        # Draw past guesses
+        for i, guess in enumerate(self.guesses):
             for j, letter in enumerate(guess):
-                # Draw a colored square
-                pygame.draw.rect(self.screen, letter["color"], (200 + j * 60, y_offset + i * 50, 50, 50))
-                # Draw the letter on top
-                letter_text = self.font.render(letter["letter"], True, (255, 255, 255))
-                self.screen.blit(letter_text, (210 + j * 60, y_offset + i * 50))
-        # Draw current guess (white, since not evaluated yet)
+                if letter:  # Check if letter exists
+                    x = start_x + j * (self.tile_size + self.tile_spacing)
+                    y = start_y + i * (self.tile_size + self.tile_spacing)
+                    pygame.draw.rect(self.screen, letter["color"], (x, y, self.tile_size, self.tile_size))
+                    text = self.tile_font.render(letter["letter"], True, WHITE)
+                    text_rect = text.get_rect(center=(x + self.tile_size//2, y + self.tile_size//2))
+                    self.screen.blit(text, text_rect)
+
+        # Draw current guess
         for j, letter in enumerate(self.current_guess):
-            pygame.draw.rect(self.screen, "white", (200 + j * 60, y_offset + self.guess_count * 50, 50, 50))
-            letter_text = self.font.render(letter["letter"], True, (255, 255, 255))
-            self.screen.blit(letter_text, (210 + j * 60, y_offset + self.guess_count * 50))
-        print(f"Drawing guess: {self.guess_string}, Past guesses: {[ ''.join(l['letter'] for l in g) for g in self.guesses[:self.guess_count] ]}")  # Debug
+            x = start_x + j * (self.tile_size + self.tile_spacing)
+            y = start_y + self.guess_count * (self.tile_size + self.tile_spacing)
+            pygame.draw.rect(self.screen, GRAY, (x, y, self.tile_size, self.tile_size), 2)  # Outline only
+            text = self.tile_font.render(letter["letter"], True, WHITE)
+            text_rect = text.get_rect(center=(x + self.tile_size//2, y + self.tile_size//2))
+            self.screen.blit(text, text_rect)
 
-    def show_result(self):
-        result_text = "You Win!" if self.game_result == "W" else f"You Lose! Word was {self.correct_word}"
-        text = self.font.render(result_text, True, (255, 255, 255))
-        self.screen.blit(text, (200, 400))
-        again_text = self.font.render("Press ENTER to play again", True, (255, 255, 255))
-        self.screen.blit(again_text, (200, 450))
+        # Draw empty slots
+        for j in range(len(self.current_guess), self.word_length):
+            x = start_x + j * (self.tile_size + self.tile_spacing)
+            y = start_y + self.guess_count * (self.tile_size + self.tile_spacing)
+            pygame.draw.rect(self.screen, GRAY, (x, y, self.tile_size, self.tile_size), 2)
 
-    def reset(self):
-        self.guess_count = 0
-        self.current_guess = []
-        self.guess_string = ""
-        self.game_result = ""
-        self.guesses = [[] for _ in range(6)]
-        self.start_game(self.word_length)
+        # Draw result
+        if self.game_result:
+            result_text = "You Win!" if self.game_result == "W" else f"You Lose! Word was {self.correct_word}"
+            text = self.font.render(result_text, True, WHITE)
+            self.screen.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT - 100))
+            again_text = self.font.render("Press ENTER to play again", True, WHITE)
+            self.screen.blit(again_text, (WIDTH//2 - again_text.get_width()//2, HEIGHT - 50))
+
+if __name__ == "__main__":
+    game = WordGame()
+    game.run()

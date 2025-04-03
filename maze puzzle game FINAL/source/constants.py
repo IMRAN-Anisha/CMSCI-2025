@@ -1,4 +1,3 @@
-# src/constants.py
 WIDTH, HEIGHT = 600, 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -8,3 +7,13 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 GRID_SIZE = 21
 CELL_SIZE = WIDTH // GRID_SIZE
+YELLOW = (255, 255, 0)
+LIGHT_GRAY = (200, 200, 200)
+CELL_SIZE = 50
+GRID_WIDTH = GRID_SIZE * CELL_SIZE
+GRID_OFFSET_X = (WIDTH - GRID_WIDTH) // 2
+
+GRID_OFFSET_Y = 80  # Moved up from 100 to 80
+GREEN = (106, 170, 100)  # Correct letter, correct position
+YELLOW = (201, 180, 88)  # Correct letter, wrong position
+DARK_GRAY = (120, 124, 126)  # Wrong letter
