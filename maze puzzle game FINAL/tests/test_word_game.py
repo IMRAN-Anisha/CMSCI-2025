@@ -6,7 +6,7 @@ import os
 
 # Adjust path to find 'games' from 'tests'
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'games')))
-from word_game import WordGame
+from games.word_game import WordGame
 
 class TestWordGame(unittest.TestCase):
     @patch('pygame.display.flip', Mock())  # Mock display.flip to avoid display errors

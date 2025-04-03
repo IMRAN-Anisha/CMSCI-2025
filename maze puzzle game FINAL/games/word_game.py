@@ -1,4 +1,3 @@
-# games/word_game.py
 import pygame
 import sys
 import random
@@ -51,15 +50,15 @@ class WordGame:
         print(f"Starting game with {length} letters")  # Debug
         try:
             if length == 3:
-                self.correct_word = random.choice(Three_LETTER).upper()
+                self.correct_word = random.choice(WORDS_3).upper()
             elif length == 4:
-                self.correct_word = random.choice(Four_LETTER).upper()
+                self.correct_word = random.choice(WORDS_4).upper()
             else:
-                self.correct_word = random.choice(Five_Letter).upper()
-            print(f"Correct word: {self.correct_word}")  # Debug
+                self.correct_word = random.choice(WORDS_5).upper()
+            print(f"Correct word set to: {self.correct_word}")  # Debug
         except NameError as e:
-            print(f"Word list error: {e}")
-            self.correct_word = "TEST"
+            print(f"Error with word lists: {e}")
+            self.correct_word = "TEST"  # Fallback
         self.game_loop()
 
     def back_to_menu(self):
@@ -114,7 +113,7 @@ class WordGame:
     def check_guess(self):
         guess = self.guess_string.lower()
         print(f"Checking guess: {guess} against {self.correct_word}")  # Debug
-        if guess.lower() == self.correct_word.lower():  # Fixed comparison
+        if guess == self.correct_word.lower():
             self.game_result = "W"
             for i, letter in enumerate(self.current_guess):
                 letter["color"] = "#6aaa64"
@@ -134,15 +133,20 @@ class WordGame:
                 self.game_result = "L"
 
     def draw(self):
-        # Simplified: just show the current guess and past guesses as text
+        # Draw past guesses with colors
         y_offset = 100
         for i, guess in enumerate(self.guesses[:self.guess_count]):
-            guess_str = "".join(letter["letter"] for letter in guess)
-            guess_text = self.font.render(guess_str, True, (255, 255, 255))
-            self.screen.blit(guess_text, (200, y_offset + i * 50))
-        # Current guess
-        guess_text = self.font.render(self.guess_string, True, (255, 255, 255))
-        self.screen.blit(guess_text, (200, y_offset + self.guess_count * 50))
+            for j, letter in enumerate(guess):
+                # Draw a colored square
+                pygame.draw.rect(self.screen, letter["color"], (200 + j * 60, y_offset + i * 50, 50, 50))
+                # Draw the letter on top
+                letter_text = self.font.render(letter["letter"], True, (255, 255, 255))
+                self.screen.blit(letter_text, (210 + j * 60, y_offset + i * 50))
+        # Draw current guess (white, since not evaluated yet)
+        for j, letter in enumerate(self.current_guess):
+            pygame.draw.rect(self.screen, "white", (200 + j * 60, y_offset + self.guess_count * 50, 50, 50))
+            letter_text = self.font.render(letter["letter"], True, (255, 255, 255))
+            self.screen.blit(letter_text, (210 + j * 60, y_offset + self.guess_count * 50))
         print(f"Drawing guess: {self.guess_string}, Past guesses: {[ ''.join(l['letter'] for l in g) for g in self.guesses[:self.guess_count] ]}")  # Debug
 
     def show_result(self):
