@@ -1,8 +1,8 @@
 import pygame
 import sys
 import random
-from source.constants import WHITE,BLACK,GRAY,GREEN,YELLOW,DARK_GRAY,BLUE
 
+# Initialize Pygame
 pygame.init()
 WIDTH, HEIGHT = 600, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -10,6 +10,20 @@ pygame.display.set_caption("Word Adventure")
 clock = pygame.time.Clock()
 
 # dummy lists 
+THREE_LETTER = ["CAT", "DOG", "BAT"]
+FOUR_LETTER = ["CAKE", "BOOK", "FISH"]
+FIVE_LETTER = ["APPLE", "BREAD", "CANDY"]
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (120, 120, 120)
+GREEN = (106, 170, 100)  # Correct letter, correct position
+YELLOW = (201, 180, 88)  # Correct letter, wrong position
+DARK_GRAY = (120, 124, 126)  # Wrong letter
+BLUE = (50, 50, 255)
+
+# Sample word lists (replace with your source/words.py content)
 THREE_LETTER = ["CAT", "DOG", "BAT"]
 FOUR_LETTER = ["CAKE", "BOOK", "FISH"]
 FIVE_LETTER = ["APPLE", "BREAD", "CANDY"]
