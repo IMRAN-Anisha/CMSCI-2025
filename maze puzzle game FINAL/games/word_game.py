@@ -1,52 +1,18 @@
 import pygame
 import sys
 import random
+from source.constants import WIDTH, HEIGHT, WHITE, BLACK, GRAY, BLUE, WORD_GREEN, WORD_YELLOW, DARK_GRAY
+from source.UI import Button
 
-# Initialize Pygame
-pygame.init()
-WIDTH, HEIGHT = 600, 600
+# Testing dummy values
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Word Adventure")
 clock = pygame.time.Clock()
 
-# dummy lists 
+# Dummy for testing
 THREE_LETTER = ["CAT", "DOG", "BAT"]
 FOUR_LETTER = ["CAKE", "BOOK", "FISH"]
 FIVE_LETTER = ["APPLE", "BREAD", "CANDY"]
-
-# Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (120, 120, 120)
-GREEN = (106, 170, 100)  # Correct letter, correct position
-YELLOW = (201, 180, 88)  # Correct letter, wrong position
-DARK_GRAY = (120, 124, 126)  # Wrong letter
-BLUE = (50, 50, 255)
-
-# Sample word lists (replace with your source/words.py content)
-THREE_LETTER = ["CAT", "DOG", "BAT"]
-FOUR_LETTER = ["CAKE", "BOOK", "FISH"]
-FIVE_LETTER = ["APPLE", "BREAD", "CANDY"]
-
-class Button:
-    def __init__(self, text, x, y, width, height, color, hover_color, action=None):
-        self.text = text
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.hover_color = hover_color
-        self.action = action
-        self.font = pygame.font.Font(None, 36)
-
-    def draw(self, screen):
-        mouse_pos = pygame.mouse.get_pos()
-        color = self.hover_color if self.rect.collidepoint(mouse_pos) else self.color
-        pygame.draw.rect(screen, color, self.rect, border_radius=10)
-        text_surf = self.font.render(self.text, True, WHITE)
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        screen.blit(text_surf, text_rect)
-
-    def is_clicked(self, event):
-        return event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos)
 
 class WordGame:
     def __init__(self):
@@ -153,13 +119,13 @@ class WordGame:
         if self.guess_string.lower() == self.correct_word.lower():
             self.game_result = "W"
             for i, letter in enumerate(self.current_guess):
-                letter["color"] = GREEN
+                letter["color"] = WORD_GREEN
         else:
             for i, letter in enumerate(self.current_guess):
                 if i < len(self.correct_word) and letter["letter"] == self.correct_word[i]:
-                    letter["color"] = GREEN
+                    letter["color"] = WORD_GREEN
                 elif letter["letter"] in self.correct_word:
-                    letter["color"] = YELLOW
+                    letter["color"] = WORD_YELLOW
                 else:
                     letter["color"] = DARK_GRAY
             
@@ -215,5 +181,6 @@ class WordGame:
             self.screen.blit(again_text, (WIDTH//2 - again_text.get_width()//2, HEIGHT - 50))
 
 if __name__ == "__main__":
+    pygame.init()  # Temporary 
     game = WordGame()
     game.run()

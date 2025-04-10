@@ -1,32 +1,13 @@
 import pygame
 import sys
 import random
-from source.constants import WIDTH,HEIGHT,WHITE,BLACK,GRAY,BLUE,RED,GREEN,YELLOW,LIGHT_GRAY,GRID_SIZE,CELL_SIZE,GRID_WIDTH, GRID_OFFSET_X, GRID_OFFSET_Y
+from source.constants import WIDTH, HEIGHT, WHITE, BLACK, GRAY, BLUE, RED, GREEN, YELLOW, LIGHT_GRAY,NUMBER_GRID_SIZE, NUMBER_CELL_SIZE, GRID_OFFSET_X, GRID_OFFSET_Y
+from source.UI import Button
 
-pygame.init()
+# testing
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sudoku Adventure")
 clock = pygame.time.Clock()
-
-class Button:
-    def __init__(self, text, x, y, width, height, color, hover_color, action=None):
-        self.text = text
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.hover_color = hover_color
-        self.action = action
-        self.font = pygame.font.Font(None, 36)
-
-    def draw(self, screen):
-        mouse_pos = pygame.mouse.get_pos()
-        color = self.hover_color if self.rect.collidepoint(mouse_pos) else self.color
-        pygame.draw.rect(screen, color, self.rect, border_radius=10)
-        text_surf = self.font.render(self.text, True, WHITE)
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        screen.blit(text_surf, text_rect)
-
-    def is_clicked(self, event):
-        return event.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(event.pos)
 
 class SudokuGame:
     def __init__(self):
@@ -35,9 +16,9 @@ class SudokuGame:
         self.running = True
         self.font = pygame.font.Font(None, 36)
         self.number_font = pygame.font.Font(None, 40)
-        self.grid = [[0] * GRID_SIZE for _ in range(GRID_SIZE)]
-        self.original = [[0] * GRID_SIZE for _ in range(GRID_SIZE)]
-        self.solution = [[0] * GRID_SIZE for _ in range(GRID_SIZE)]
+        self.grid = [[0] * NUMBER_GRID_SIZE for _ in range(NUMBER_GRID_SIZE)]
+        self.original = [[0] * NUMBER_GRID_SIZE for _ in range(NUMBER_GRID_SIZE)]
+        self.solution = [[0] * NUMBER_GRID_SIZE for _ in range(NUMBER_GRID_SIZE)]
         self.selected = None
         self.show_solution = False
         self.timer = 0
@@ -45,7 +26,7 @@ class SudokuGame:
 
     def generate_puzzle(self, difficulty):
         # Generate full grid
-        self.grid = [[0] * GRID_SIZE for _ in range(GRID_SIZE)]
+        self.grid = [[0] * NUMBER_GRID_SIZE for _ in range(NUMBER_GRID_SIZE)]
         self.solve(self.grid)
         self.solution = [row[:] for row in self.grid]  # Store solution
         
@@ -84,12 +65,15 @@ class SudokuGame:
         return None
 
     def is_valid(self, grid, num, pos):
+        # Check row
         for x in range(9):
             if grid[pos[0]][x] == num and pos[1] != x:
                 return False
+        # Check column
         for x in range(9):
             if grid[x][pos[1]] == num and pos[0] != x:
                 return False
+        # Check 3x3 box
         box_x, box_y = pos[1] // 3, pos[0] // 3
         for i in range(box_y * 3, box_y * 3 + 3):
             for j in range(box_x * 3, box_x * 3 + 3):
@@ -167,8 +151,8 @@ class SudokuGame:
             self.clock.tick(60)
 
     def handle_click(self, pos):
-        x = (pos[0] - GRID_OFFSET_X) // CELL_SIZE
-        y = (pos[1] - GRID_OFFSET_Y) // CELL_SIZE
+        x = (pos[0] - GRID_OFFSET_X) // NUMBER_CELL_SIZE
+        y = (pos[1] - GRID_OFFSET_Y) // NUMBER_CELL_SIZE
         if 0 <= x < 9 and 0 <= y < 9 and self.original[y][x] == 0:
             self.selected = (y, x)
         else:
@@ -194,39 +178,39 @@ class SudokuGame:
 
         # Draw grid background
         pygame.draw.rect(self.screen, LIGHT_GRAY, 
-                        (GRID_OFFSET_X, GRID_OFFSET_Y, GRID_WIDTH, GRID_WIDTH))
+                        (GRID_OFFSET_X, GRID_OFFSET_Y, NUMBER_GRID_SIZE * NUMBER_CELL_SIZE, NUMBER_GRID_SIZE * NUMBER_CELL_SIZE))
 
         # Draw grid lines
-        for i in range(GRID_SIZE + 1):
+        for i in range(NUMBER_GRID_SIZE + 1):
             thickness = 3 if i % 3 == 0 else 1
             pygame.draw.line(self.screen, BLACK, 
-                           (GRID_OFFSET_X, GRID_OFFSET_Y + i * CELL_SIZE),
-                           (GRID_OFFSET_X + GRID_WIDTH, GRID_OFFSET_Y + i * CELL_SIZE), thickness)
+                           (GRID_OFFSET_X, GRID_OFFSET_Y + i * NUMBER_CELL_SIZE),
+                           (GRID_OFFSET_X + NUMBER_GRID_SIZE * NUMBER_CELL_SIZE, GRID_OFFSET_Y + i * NUMBER_CELL_SIZE), thickness)
             pygame.draw.line(self.screen, BLACK,
-                           (GRID_OFFSET_X + i * CELL_SIZE, GRID_OFFSET_Y),
-                           (GRID_OFFSET_X + i * CELL_SIZE, GRID_OFFSET_Y + GRID_WIDTH), thickness)
+                           (GRID_OFFSET_X + i * NUMBER_CELL_SIZE, GRID_OFFSET_Y),
+                           (GRID_OFFSET_X + i * NUMBER_CELL_SIZE, GRID_OFFSET_Y + NUMBER_GRID_SIZE * NUMBER_CELL_SIZE), thickness)
 
         # Draw numbers
-        for i in range(GRID_SIZE):
-            for j in range(GRID_SIZE):
+        for i in range(NUMBER_GRID_SIZE):
+            for j in range(NUMBER_GRID_SIZE):
                 if self.show_solution and self.grid[i][j] == 0:
                     text = self.number_font.render(str(self.solution[i][j]), True, YELLOW)
-                    text_rect = text.get_rect(center=(GRID_OFFSET_X + j * CELL_SIZE + CELL_SIZE//2,
-                                                    GRID_OFFSET_Y + i * CELL_SIZE + CELL_SIZE//2))
+                    text_rect = text.get_rect(center=(GRID_OFFSET_X + j * NUMBER_CELL_SIZE + NUMBER_CELL_SIZE//2,
+                                                    GRID_OFFSET_Y + i * NUMBER_CELL_SIZE + NUMBER_CELL_SIZE//2))
                     self.screen.blit(text, text_rect)
                 elif self.grid[i][j] != 0:
                     color = BLUE if self.original[i][j] != 0 else GREEN
                     text = self.number_font.render(str(self.grid[i][j]), True, color)
-                    text_rect = text.get_rect(center=(GRID_OFFSET_X + j * CELL_SIZE + CELL_SIZE//2,
-                                                    GRID_OFFSET_Y + i * CELL_SIZE + CELL_SIZE//2))
+                    text_rect = text.get_rect(center=(GRID_OFFSET_X + j * NUMBER_CELL_SIZE + NUMBER_CELL_SIZE//2,
+                                                    GRID_OFFSET_Y + i * NUMBER_CELL_SIZE + NUMBER_CELL_SIZE//2))
                     self.screen.blit(text, text_rect)
 
         # Draw selection
         if self.selected:
             pygame.draw.rect(self.screen, RED,
-                           (GRID_OFFSET_X + self.selected[1] * CELL_SIZE,
-                            GRID_OFFSET_Y + self.selected[0] * CELL_SIZE,
-                            CELL_SIZE, CELL_SIZE), 2)
+                           (GRID_OFFSET_X + self.selected[1] * NUMBER_CELL_SIZE,
+                            GRID_OFFSET_Y + self.selected[0] * NUMBER_CELL_SIZE,
+                            NUMBER_CELL_SIZE, NUMBER_CELL_SIZE), 2)
 
         # Draw HUD
         time_text = self.font.render(f"Time: {self.timer:.1f}", True, WHITE)
@@ -269,5 +253,6 @@ class SudokuGame:
             self.clock.tick(60)
 
 if __name__ == "__main__":
+    pygame.init()  # Testing
     game = SudokuGame()
     game.main_menu()

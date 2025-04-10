@@ -1,45 +1,14 @@
 import pygame
 import sys
 import random
-from dfs_solver import DFSSolver
+from source.constants import WIDTH, HEIGHT, WHITE, BLACK, BLUE, RED, GREEN, GRAY, YELLOW, GRID_SIZE, CELL_SIZE
+from source.UI import Button
+from games.dfs_solver import DFSSolver
 
-# Constants
-WIDTH, HEIGHT = 600, 600
-GRID_SIZE = 21
-CELL_SIZE = WIDTH // GRID_SIZE
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 255)    # Player
-RED = (255, 0, 0)     # Goal
-GREEN = (0, 255, 0)   # Solution Path
-GRAY = (150, 150, 150)
-YELLOW = (255, 255, 0) # Hint color
-
-# Initialize Pygame
-pygame.init()
+# testing
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Maze Adventure")
 clock = pygame.time.Clock()
-
-class Button:
-    def __init__(self, text, x, y, width, height, color, hover_color, action=None):
-        self.text = text
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.hover_color = hover_color
-        self.action = action
-        self.font = pygame.font.Font(None, 36)
-
-    def draw(self, screen):
-        mouse_pos = pygame.mouse.get_pos()
-        color = self.hover_color if self.rect.collidepoint(mouse_pos) else self.color
-        pygame.draw.rect(screen, color, self.rect, border_radius=10)
-        text_surf = self.font.render(self.text, True, WHITE)
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        screen.blit(text_surf, text_rect)
-
-    def is_clicked(self, pos):
-        return self.rect.collidepoint(pos)
 
 class Game:
     def __init__(self):
@@ -107,7 +76,7 @@ class Game:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in buttons:
-                        if button.is_clicked(event.pos) and button.action:
+                        if button.is_clicked(event):
                             button.action()
                             return
             
@@ -147,7 +116,7 @@ class Game:
 
             self.draw_game()
             if self.timer >= 0:  # Timed mode
-                self.timer += 1/60  # Increment by frame time
+                self.timer += 1/60  # Increment 
             
             # Check win condition
             if tuple(self.player_pos) == self.end:
@@ -225,10 +194,10 @@ class Game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if replay.is_clicked(event.pos):
+                    if replay.is_clicked(event):
                         replay.action()
                         return
-                    if menu.is_clicked(event.pos):
+                    if menu.is_clicked(event):
                         menu.action()
                         return
             
@@ -236,5 +205,6 @@ class Game:
             clock.tick(60)
 
 if __name__ == "__main__":
+    pygame.init()  # Testing
     game = Game()
     game.main_menu()
