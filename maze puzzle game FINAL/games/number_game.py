@@ -1,7 +1,7 @@
 import pygame
 import sys
 import random
-from source.constants import WIDTH, HEIGHT, WHITE, BLACK, GRAY, BLUE, RED, GREEN, YELLOW, LIGHT_GRAY,NUMBER_GRID_SIZE, NUMBER_CELL_SIZE, GRID_OFFSET_X, GRID_OFFSET_Y
+from source.constants import *
 from source.UI import Button
 
 # testing
