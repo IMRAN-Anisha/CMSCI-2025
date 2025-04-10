@@ -1,8 +1,9 @@
 import pygame
 import sys
-from number_game import SudokuGame  
-from puzzle_game import Game      
-from word_game import WordGame     
+
+from games.number_game import SudokuGame
+from games.puzzle_game import Game      
+from games.word_game import WordGame     
 
 # Initialize Pygame
 pygame.init()

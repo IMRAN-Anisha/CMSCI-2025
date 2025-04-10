@@ -1,9 +1,13 @@
 # source/main.py
 import pygame
-from source.UI import MainMenu, GameSelectionMenu, InstructionsScreen
+from source.UI import *
+print("a")
 from source.maze_game import MazeGame
+print("a")
 from games.word_game import WordGame  # Add this import
+print("a")
 from source.constants import WIDTH, HEIGHT
+print("a")
 
 def run_game():
     pygame.init()

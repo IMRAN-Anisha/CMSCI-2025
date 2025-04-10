@@ -15,7 +15,7 @@ FOUR_LETTER = ["CAKE", "BOOK", "FISH"]
 FIVE_LETTER = ["APPLE", "BREAD", "CANDY"]
 
 class WordGame:
-    def __init__(self):
+    def __init__(self, screen, clock):
         self.screen = screen
         self.clock = clock
         self.running = True

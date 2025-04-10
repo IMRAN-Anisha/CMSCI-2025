@@ -1,11 +1,5 @@
 import random
-from words import Three_LETTER,Four_LETTER,Five_Letter
-if length == 3:
-    self.correct_word = random.choice(Three_LETTER).upper()
-elif length == 4:
-    self.correct_word = random.choice(Four_LETTER).upper()
-else:
-    self.correct_word = random.choice(Five_Letter).upper()
+from source.words import *
 
 def start_game(self, length):
     self.word_length = length

@@ -1,8 +1,8 @@
 import pygame
 import sys
 import random
-from source.constants import *
 from source.UI import Button
+from source.constants import BLACK, BLUE, GRAY, GREEN, GRID_OFFSET_X, GRID_OFFSET_Y, HEIGHT, LIGHT_GRAY, NUMBER_CELL_SIZE, NUMBER_GRID_SIZE, RED, WHITE, WIDTH, YELLOW
 
 # testing
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
