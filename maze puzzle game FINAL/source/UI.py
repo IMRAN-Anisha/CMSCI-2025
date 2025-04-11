@@ -2,6 +2,7 @@
 #keeps consistency in graphics (button design, etc.)
 import pygame
 import sys
+from constants import *
 
 pygame.init()
 
@@ -155,3 +156,34 @@ class InstructionsScreen:
 
     def back(self):
         self.running = False  
+# source/UI.py (partial)
+class MainMenu:
+    def __init__(self, screen, width, height):
+        self.screen = screen
+        self.width = width
+        self.height = height
+        self.font = pygame.font.Font(None, 36)
+        self.buttons = [
+            Button("Select Game", 200, 150, 200, 50, BLUE, GRAY, lambda: "select_game"),
+            Button("Instructions", 200, 250, 200, 50, BLUE, GRAY, lambda: "instructions"),
+            Button("Quit", 200, 350, 200, 50, BLUE, GRAY, lambda: "quit")
+        ]
+
+    def run(self):
+        while True:
+            self.screen.fill(BLACK)
+            title = self.font.render("Maze Puzzle Game", True, WHITE)
+            self.screen.blit(title, (self.width//2 - title.get_width()//2, 50))
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    for button in self.buttons:
+                        if button.is_clicked(event):
+                            return button.action()
+            
+            for button in self.buttons:
+                button.draw(self.screen)
+            pygame.display.flip()

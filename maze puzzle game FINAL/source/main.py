@@ -1,9 +1,14 @@
-# main.py
-#main game structure, putting it all together.
+# source/main.py
+# Main game structure, putting it all together.
+import sys  # Added sys import
+import os
+# Add the parent directory (maze_puzzle_game_FINAL) to the system path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Moved to top
+
 import pygame
 from source.UI import *
 print("a")
-from games.puzzle_game import MazeGame
+from games.puzzle_game import PuzzleGame
 print("a")
 from games.word_game import WordGame  
 print("a")
@@ -25,18 +30,19 @@ def run_game():
             selection_menu = GameSelectionMenu(screen, WIDTH, HEIGHT)
             game_choice = selection_menu.run()
 
-            if game_choice == "maze":
-                game = MazeGame(screen, clock)
+            if game_choice == "puzzle":  # Updated to "puzzle" to match GameSelectionMenu
+                game = PuzzleGame(screen, clock)  # Fixed: Use PuzzleGame instead of MazeGame
                 game.run()
             elif game_choice == "word":
-                game = WordGame(screen, clock)  #here
+                game = WordGame(screen, clock)
                 game.run()
             elif game_choice == "number":
-                game = SudokuGame(screen,clock)
-                game.run()  # change
+                game = SudokuGame(screen, clock)
+                game.run()
+
         if next_action == "instructions":
             instructions = InstructionsScreen(screen)
-            instructions.run()  # fix this ASAP
+            instructions.run()  # Fix this ASAP
 
     pygame.quit()
 

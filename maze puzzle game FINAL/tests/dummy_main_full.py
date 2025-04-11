@@ -4,7 +4,6 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from source.UI import MainMenu, GameSelectionMenu, InstructionsScreen
-from source.maze_game import MazeGame
 from games.word_game import WordGame
 from source.constants import WIDTH, HEIGHT
 
@@ -26,7 +25,7 @@ def run_dummy_game():
 
             # Launch the selected game
             if game_choice == "maze":
-                game = MazeGame(screen, clock)
+                game = (screen, clock)
                 game.run()
             elif game_choice == "word":
                 game = WordGame(screen, clock)

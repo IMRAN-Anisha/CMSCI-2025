@@ -1,4 +1,3 @@
-# tests/test_word_game.py
 import unittest
 from unittest.mock import Mock, patch
 import sys
