@@ -9,6 +9,16 @@ from source.UI import Button
 from source.dfs_solver import DFSSolver  # Using source.dfs_solver for now
 from source.constants import *
 
+# source/pathfinding_algorithm.py
+from abc import ABC, abstractmethod
+
+#abstract class
+class PathfindingAlgorithm(ABC):
+    @abstractmethod
+    def solve(self, maze, start, end):
+        """Solve the maze and return the path from start to end."""
+        pass
+
 # Constants (override if not defined in source.constants)
 GRID_SIZE = 21
 CELL_SIZE = WIDTH // GRID_SIZE
