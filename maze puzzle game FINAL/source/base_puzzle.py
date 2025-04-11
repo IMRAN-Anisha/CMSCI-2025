@@ -38,3 +38,27 @@ class BasePuzzle(ABC):
             pygame.quit()
             sys.exit()
         return True
+    
+#simplified version
+class BasePuzzle:
+    def __init__(self, screen, clock):
+        self.screen = screen
+        self.clock = clock
+
+    def generate_puzzle(self):
+        raise NotImplementedError
+
+    def handle_key(self, event):
+        raise NotImplementedError
+
+    def draw(self):
+        raise NotImplementedError
+
+    def run(self):
+        raise NotImplementedError
+
+    def start_game(self, difficulty):
+        raise NotImplementedError
+
+    def quit_game(self, return_to_menu=False):
+        pass  # Default implementation
