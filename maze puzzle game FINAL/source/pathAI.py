@@ -1,4 +1,4 @@
-from games.puzzle_game import PathfindingAlgorithm
+from source.pathfinding_algorithm import PathfindingAlgorithm
 
 #using my abstract class to make the "AI-pathfinder"
 
@@ -29,7 +29,7 @@ class DFSSolver(PathfindingAlgorithm):
                     visited.add((nx, ny))
 
         return None  # No path found
-    
+
 class AIAdaptiveSystem:
     def __init__(self):
         self.performance_history = []  # Track performance metrics

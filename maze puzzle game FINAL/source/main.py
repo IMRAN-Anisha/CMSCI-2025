@@ -16,35 +16,51 @@ from source.constants import WIDTH, HEIGHT
 print("a")
 from games.number_game import SudokuGame
 
+from source.path_levels import EasyMaze, MediumMaze, HardMaze
+
 def run_game():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Game Suite")
+    pygame.display.set_caption("Maze Adventure")
     clock = pygame.time.Clock()
 
+    current_difficulty = "medium"  # Default starting difficulty
+    game_classes = {
+        "easy": EasyMaze,
+        "medium": MediumMaze,
+        "hard": HardMaze
+    }
+
     while True:
-        menu = MainMenu(screen, WIDTH, HEIGHT)
-        next_action = menu.run()
+        main_menu = MainMenu(screen, WIDTH, HEIGHT)
+        choice = main_menu.run()
+        if choice == "quit":
+            pygame.quit()
+            return
 
-        if next_action == "select_game":
-            selection_menu = GameSelectionMenu(screen, WIDTH, HEIGHT)
-            game_choice = selection_menu.run()
+        if choice == "play":
+            game_selection_menu = GameSelectionMenu(screen, WIDTH, HEIGHT)
+            game_choice = game_selection_menu.run()
+            if game_choice == "back":
+                continue
 
-            if game_choice == "puzzle":  # Updated to "puzzle" to match GameSelectionMenu
-                game = PuzzleGame(screen, clock)  # Fixed: Use PuzzleGame instead of MazeGame
-                game.run()
-            elif game_choice == "word":
-                game = WordGame(screen, clock)
-                game.run()
-            elif game_choice == "number":
-                game = SudokuGame(screen, clock)
-                game.run()
+            if game_choice == "puzzle":
+                difficulty_menu = GameSelectionMenu(screen, WIDTH, HEIGHT)  # Reuse for difficulty
+                difficulty = difficulty_menu.run()  # Assume modified to show difficulties
+                if difficulty == "back":
+                    continue
+                if difficulty in game_classes:
+                    current_difficulty = difficulty  # Update current difficulty
 
-        if next_action == "instructions":
-            instructions = InstructionsScreen(screen)
-            instructions.run()  # Fix this ASAP
-
-    pygame.quit()
+            game_class = game_classes.get(current_difficulty)
+            if game_class:
+                game = game_class(screen, clock)
+                return_to_menu = game.start_game(current_difficulty)
+                # After game ends, get the suggested difficulty
+                current_difficulty = game.get_current_difficulty()
+                if not return_to_menu:
+                    pygame.quit()
+                    return
 
 if __name__ == "__main__":
     run_game()

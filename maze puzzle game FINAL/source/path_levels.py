@@ -1,4 +1,3 @@
-# easy_maze.py
 from games.puzzle_game import PuzzleGame
 from source.constants import WIDTH
 
@@ -8,11 +7,7 @@ class EasyMaze(PuzzleGame):
 
     def __init__(self, screen, clock):
         super().__init__(screen, clock)
-        self.time_limit = -1  # No timer for Easy
-
-# medium_maze.py
-from games.puzzle_game import PuzzleGame
-from source.constants import WIDTH
+        self.set_time_limit(-1)  # No timer for Easy
 
 class MediumMaze(PuzzleGame):
     GRID_SIZE = 21  # Default maze size
@@ -20,11 +15,7 @@ class MediumMaze(PuzzleGame):
 
     def __init__(self, screen, clock):
         super().__init__(screen, clock)
-        self.time_limit = 120  # 120 seconds
-
-# hard_maze.py
-from games.puzzle_game import PuzzleGame
-from source.constants import WIDTH
+        self.set_time_limit(120)  # 120 seconds
 
 class HardMaze(PuzzleGame):
     GRID_SIZE = 25  # Larger maze
@@ -32,4 +23,4 @@ class HardMaze(PuzzleGame):
 
     def __init__(self, screen, clock):
         super().__init__(screen, clock)
-        self.time_limit = 60  # 60 seconds
+        self.set_time_limit(60)  # 60 seconds
