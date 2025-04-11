@@ -32,7 +32,7 @@ class PuzzleGame:
         self.time_limit = None  # Will be set based on difficulty
         self.current_difficulty = None
 
-    def run(self):
+    def run(self): #implements abstract method
         while self.running:
             # Start with the difficulty menu
             difficulty = self.difficulty_menu()
