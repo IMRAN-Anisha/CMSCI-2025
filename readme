@@ -2,12 +2,38 @@ YR 12 COMPUTER SCIENCE - Puzzle GAME
 IMRAN Anisha
 DOCUMENTATION LINK:    ......
 
--------------------------------------------------Overview-----------------------------------------------------
+-------------------------------------------------Overview----------------------------------------------------
 This project is a maze puzzle game that utilizes Object-Oriented Programming (OOP) 
 and the Depth-First Search (DFS) algorithm
 for procedural maze generation and pathfinding. The game is built using Python and Pygame,
 and it emphasizes structured game design principles.
 
+------------------------------------------------How to play---------------------------------------------------
+Word Game (Wordle)
+1. Guess the 3,4,or 5-letter word in 6 tries or less.
+2. Each guess must be a valid English word (note restricted dictonary, only 100 words)
+3. After each guess, tile colors show how close your guess is to the word:
+    Green: correct letter, correct position
+    Yellow: correct letter, wrong position
+    Gray: letter not in the word
+
+Number Game (Sudoku)
+1. Fill the 9x9 grid so each row, column, and 3x3 box contains numbers 1–9.
+2. No duplicates are allowed in any row, column, or box.
+3. Click on the cell to place a number
+4. Use logic and strategy to solve the puzzle with minimal guesses.
+
+3. Puzzle Game (Maze)
+1. Navigate through the maze from start to finish.
+2. Use arrow keys to move your character.
+
+Controls & Options
+Select difficulty before starting: Easy / Medium / Hard.
+
+Press S to show the solution.
+Press H for a hint (-5 points).
+Press R to restart the current game.
+Arrow keys are used to move in the Maze game.
 -------------------------------------------------Features-----------------------------------------------------
 
 1. Procedural Maze Generation: The DFS algorithm is used to generate unique mazes dynamically.
