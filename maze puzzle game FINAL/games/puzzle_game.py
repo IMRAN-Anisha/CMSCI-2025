@@ -191,7 +191,6 @@ class PuzzleGame(BasePuzzle):
             self.quit_game(return_to_menu=True)
 
     def draw(self):
-        """Draws the game state, including the maze, player, goal, hints, and HUD."""
         self.screen.fill((0, 0, 0))  # Black background
 
         # Draw the maze
@@ -228,16 +227,24 @@ class PuzzleGame(BasePuzzle):
         pygame.draw.rect(self.screen, (255, 0, 0), (end_y * self.CELL_SIZE, end_x * self.CELL_SIZE, self.CELL_SIZE, self.CELL_SIZE))
 
         # Draw the HUD (score, timer, and hint text)
-        score_text = self.__font.render(f"Score: {self.get_score()}", True, (0,0,193))  # White text
+        score_text = self.__font.render(f"Score: {self.get_score()}", True, (0,0,193))  
         self.screen.blit(score_text, (10, 10))
 
+        # Debug time limit
+        print("Time limit:", self.get_time_limit(), "Timer:", self.get_timer())
+
+        # Draw timer with (0, 0, 193) text and white background
         if self.get_time_limit() >= 0:
             time_remaining = max(0, self.get_time_limit() - self.get_timer())
-            timer_text = self.__font.render(f"Time: {int(time_remaining)}", True, (0,0,193))  # White text
-            self.screen.blit(timer_text, (self.screen.get_width() - 150, 10))
+            timer_text = self.__font.render(f"Time: {int(time_remaining)}", True, (0, 0, 193))  # Blue text
+            timer_pos = (self.screen.get_width() - 150, 10)
+            # Draw white background for timer
+            pygame.draw.rect(self.screen, (255, 255, 255), (timer_pos[0] - 5, timer_pos[1] - 5, timer_text.get_width() + 10, timer_text.get_height() + 10))
+            self.screen.blit(timer_text, timer_pos)
+            print("Timer rendering: Time", int(time_remaining))
 
         # Draw the hint text (controls instruction)
-        hint_text = self.__font.render("H: Hint | S: Solution | R: Restart | Q: Quit", True, (0,0,193))  # White text
+        hint_text = self.__font.render("H: Hint | S: Solution | R: Restart | Q: Quit", True, (0,0,193))  
         self.screen.blit(hint_text, (10, self.screen.get_height() - 30))  # Position at bottom-left
 
         pygame.display.flip()
@@ -245,13 +252,14 @@ class PuzzleGame(BasePuzzle):
     def start_game(self, difficulty):
         """Starts a new game with the specified difficulty."""
         self.set_current_difficulty(difficulty)
-        self.set_timer(0 if self.get_time_limit() >= 0 else -1)
+        self.set_time_limit(60)  # Ensure timed mode
+        self.set_timer(0)  # Reset timer
         self.generate_puzzle()
         self.set_player_pos([1, 1])
         self.set_solution_shown(False)
         self.set_hint_shown(False)
         self.__score_manager.reset()
-        return self.run()  # Call run instead of game_loop
+        return self.run()
 
     def run(self):
         """Main game loop implementing the abstract run method from BasePuzzle."""
