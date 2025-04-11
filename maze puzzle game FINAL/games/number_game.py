@@ -1,16 +1,15 @@
-import pygame
 import sys
+import os
+# Add the parent directory (maze_puzzle_game_FINAL) to the system path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import pygame
 import random
 from source.UI import Button
-from source.constants import BLACK, BLUE, GRAY, GREEN, GRID_OFFSET_X, GRID_OFFSET_Y, HEIGHT, LIGHT_GRAY, NUMBER_CELL_SIZE, NUMBER_GRID_SIZE, RED, WHITE, WIDTH, YELLOW
-
-# testing
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Sudoku Adventure")
-clock = pygame.time.Clock()
+from source.constants import *
 
 class SudokuGame:
-    def __init__(self):
+    def __init__(self, screen, clock):
         self.screen = screen
         self.clock = clock
         self.running = True
@@ -23,17 +22,23 @@ class SudokuGame:
         self.show_solution = False
         self.timer = 0
         self.solved = False
+        self.current_difficulty = None  # Store the current difficulty
+
+    def run(self):
+        while self.running:
+            # Start directly with the difficulty menu
+            difficulty = self.difficulty_menu()
+            if difficulty is None:  # Player chose to go back or quit
+                break  # Return to main menu in main.py
+            # Start the game with the selected difficulty
+            self.start_game(difficulty)
+        return True  # Signal to return to main menu
 
     def generate_puzzle(self, difficulty):
-        # Generate full grid
         self.grid = [[0] * NUMBER_GRID_SIZE for _ in range(NUMBER_GRID_SIZE)]
         self.solve(self.grid)
-        self.solution = [row[:] for row in self.grid]  # Store solution
-        
-        # Copy to original
+        self.solution = [row[:] for row in self.grid]
         self.original = [row[:] for row in self.grid]
-        
-        # Remove numbers based on difficulty
         cells_to_remove = {"easy": 30, "medium": 40, "hard": 50}[difficulty]
         cells = [(i, j) for i in range(9) for j in range(9)]
         random.shuffle(cells)
@@ -46,7 +51,6 @@ class SudokuGame:
         if not empty:
             return True
         row, col = empty
-        
         numbers = list(range(1, 10))
         random.shuffle(numbers)
         for num in numbers:
@@ -65,15 +69,12 @@ class SudokuGame:
         return None
 
     def is_valid(self, grid, num, pos):
-        # Check row
         for x in range(9):
             if grid[pos[0]][x] == num and pos[1] != x:
                 return False
-        # Check column
         for x in range(9):
             if grid[x][pos[1]] == num and pos[0] != x:
                 return False
-        # Check 3x3 box
         box_x, box_y = pos[1] // 3, pos[0] // 3
         for i in range(box_y * 3, box_y * 3 + 3):
             for j in range(box_x * 3, box_x * 3 + 3):
@@ -81,21 +82,14 @@ class SudokuGame:
                     return False
         return True
 
-    def main_menu(self):
-        buttons = [
-            Button("Play", 200, 250, 200, 50, BLUE, GRAY, self.difficulty_menu),
-            Button("Quit", 200, 350, 200, 50, BLUE, GRAY, sys.exit)
-        ]
-        self.menu_loop(buttons)
-
     def difficulty_menu(self):
         buttons = [
-            Button("Easy", 200, 150, 200, 50, BLUE, GRAY, lambda: self.start_game("easy")),
-            Button("Medium", 200, 250, 200, 50, BLUE, GRAY, lambda: self.start_game("medium")),
-            Button("Hard", 200, 350, 200, 50, BLUE, GRAY, lambda: self.start_game("hard")),
-            Button("Back", 200, 450, 200, 50, BLUE, GRAY, self.main_menu)
+            Button("Easy", 200, 150, 200, 50, BLUE, GRAY, lambda: "easy"),
+            Button("Medium", 200, 250, 200, 50, BLUE, GRAY, lambda: "medium"),
+            Button("Hard", 200, 350, 200, 50, BLUE, GRAY, lambda: "hard"),
+            Button("Back", 200, 450, 200, 50, BLUE, GRAY, lambda: None)  # Return to main menu
         ]
-        self.menu_loop(buttons)
+        return self.menu_loop(buttons)
 
     def menu_loop(self, buttons):
         while self.running:
@@ -105,30 +99,34 @@ class SudokuGame:
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.quit_game()
+                    self.quit_game(return_to_menu=True)
+                    return None  # Signal to return to main menu
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for button in buttons:
                         if button.is_clicked(event):
-                            button.action()
-                            return
+                            return button.action()  # Return the action result (difficulty string or None)
             
             for button in buttons:
                 button.draw(self.screen)
             pygame.display.flip()
             self.clock.tick(60)
+        return None  # Return to main menu if loop exits
 
     def start_game(self, difficulty):
+        self.current_difficulty = difficulty  # Store the difficulty
         self.generate_puzzle(difficulty)
         self.selected = None
         self.show_solution = False
         self.timer = 0
         self.solved = False
-        self.game_loop()
+        return self.game_loop()
 
-    def quit_game(self):
+    def quit_game(self, return_to_menu=False):
         self.running = False
-        pygame.quit()
-        sys.exit()
+        if not return_to_menu:
+            pygame.quit()
+            sys.exit()
+        return True
 
     def game_loop(self):
         while self.running:
@@ -136,7 +134,8 @@ class SudokuGame:
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.quit_game()
+                    self.quit_game(return_to_menu=True)
+                    return True
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_click(event.pos)
                 elif event.type == pygame.KEYDOWN:
@@ -144,11 +143,15 @@ class SudokuGame:
             
             self.timer += 1/60
             self.draw()
-            if self.check_win():
-                self.victory_screen()
-                return
+            result = self.check_win()
+            if result:
+                if result == "win":
+                    return self.victory_screen()
+                elif result == "loss":
+                    return self.loss_screen()
             pygame.display.flip()
             self.clock.tick(60)
+        return True
 
     def handle_click(self, pos):
         x = (pos[0] - GRID_OFFSET_X) // NUMBER_CELL_SIZE
@@ -158,6 +161,9 @@ class SudokuGame:
         else:
             self.selected = None
 
+    # below is option one, if you want to input the correct number only,
+    # this does not allow you to enter the wrong number.
+    ''' 
     def handle_key(self, event):
         if self.selected:
             if event.key in range(pygame.K_0, pygame.K_9 + 1):
@@ -170,17 +176,32 @@ class SudokuGame:
             self.show_solution = not self.show_solution
         elif event.key == pygame.K_r:
             self.start_game("medium")
+    '''
+    # below is the code if you want to be able to put any number, by removing the self.is_valid()
+    def handle_key(self, event):
+        if self.selected:
+            if event.key in range(pygame.K_0, pygame.K_9 + 1):
+                num = event.key - pygame.K_0
+                if num == 0:  # Allow erasing with 0
+                    self.grid[self.selected[0]][self.selected[1]] = 0
+                elif num >= 1 and num <= 9:  # Allow any number 1-9
+                    self.grid[self.selected[0]][self.selected[1]] = num
+            elif event.key == pygame.K_BACKSPACE:
+                self.grid[self.selected[0]][self.selected[1]] = 0
+        if event.key == pygame.K_s:
+            self.show_solution = not self.show_solution
+        elif event.key == pygame.K_r:
+            self.start_game(self.current_difficulty)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:  # Quit the game when Q is pressed
+                self.quit_game(return_to_menu=True)
+                return True
 
     def draw(self):
-        # Draw title
         title = self.font.render("Sudoku Adventure", True, WHITE)
         self.screen.blit(title, (WIDTH//2 - title.get_width()//2, 20))
-
-        # Draw grid background
         pygame.draw.rect(self.screen, LIGHT_GRAY, 
                         (GRID_OFFSET_X, GRID_OFFSET_Y, NUMBER_GRID_SIZE * NUMBER_CELL_SIZE, NUMBER_GRID_SIZE * NUMBER_CELL_SIZE))
-
-        # Draw grid lines
         for i in range(NUMBER_GRID_SIZE + 1):
             thickness = 3 if i % 3 == 0 else 1
             pygame.draw.line(self.screen, BLACK, 
@@ -189,8 +210,6 @@ class SudokuGame:
             pygame.draw.line(self.screen, BLACK,
                            (GRID_OFFSET_X + i * NUMBER_CELL_SIZE, GRID_OFFSET_Y),
                            (GRID_OFFSET_X + i * NUMBER_CELL_SIZE, GRID_OFFSET_Y + NUMBER_GRID_SIZE * NUMBER_CELL_SIZE), thickness)
-
-        # Draw numbers
         for i in range(NUMBER_GRID_SIZE):
             for j in range(NUMBER_GRID_SIZE):
                 if self.show_solution and self.grid[i][j] == 0:
@@ -204,34 +223,37 @@ class SudokuGame:
                     text_rect = text.get_rect(center=(GRID_OFFSET_X + j * NUMBER_CELL_SIZE + NUMBER_CELL_SIZE//2,
                                                     GRID_OFFSET_Y + i * NUMBER_CELL_SIZE + NUMBER_CELL_SIZE//2))
                     self.screen.blit(text, text_rect)
-
-        # Draw selection
         if self.selected:
             pygame.draw.rect(self.screen, RED,
                            (GRID_OFFSET_X + self.selected[1] * NUMBER_CELL_SIZE,
                             GRID_OFFSET_Y + self.selected[0] * NUMBER_CELL_SIZE,
                             NUMBER_CELL_SIZE, NUMBER_CELL_SIZE), 2)
-
-        # Draw HUD
         time_text = self.font.render(f"Time: {self.timer:.1f}", True, WHITE)
         self.screen.blit(time_text, (10, HEIGHT - 40))
-        hint_text = self.font.render("S: Solution | R: Restart | 0-9: Input", True, WHITE)
+        hint_text = self.font.render("S: Solution | R: Restart | 0-9: Input | Q: Quit", True, WHITE)
         self.screen.blit(hint_text, (10, HEIGHT - 70))
 
     def check_win(self):
+        # Check if the grid is completely filled
         for i in range(9):
             for j in range(9):
-                if self.grid[i][j] == 0 or not self.is_valid(self.grid, self.grid[i][j], (i, j)):
-                    return False
-        return True
+                if self.grid[i][j] == 0:
+                    return False  # Grid isn't fully filled yet
+        
+        # Grid is filled, compare with the solution
+        for i in range(9):
+            for j in range(9):
+                if self.grid[i][j] != self.solution[i][j]:
+                    return "loss"  # Grid is filled but incorrect
+        return "win"  # Grid is filled and matches the solution
 
     def victory_screen(self):
         while self.running:
             self.screen.fill(BLACK)
             victory_text = self.font.render("Congratulations! You Solved It!", True, WHITE)
             time_text = self.font.render(f"Time: {self.timer:.1f}", True, WHITE)
-            replay = Button("Play Again", 200, 300, 200, 50, BLUE, GRAY, lambda: self.start_game("medium"))
-            menu = Button("Main Menu", 200, 400, 200, 50, BLUE, GRAY, self.main_menu)
+            replay = Button("Play Again", 200, 300, 200, 50, BLUE, GRAY, lambda: self.start_game(self.current_difficulty))
+            menu = Button("Main Menu", 200, 400, 200, 50, BLUE, GRAY, lambda: True)
 
             self.screen.blit(victory_text, (WIDTH//2 - victory_text.get_width()//2, 100))
             self.screen.blit(time_text, (WIDTH//2 - time_text.get_width()//2, 200))
@@ -240,19 +262,52 @@ class SudokuGame:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.quit_game()
+                    self.quit_game(return_to_menu=True)
+                    return True
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if replay.is_clicked(event):
                         replay.action()
-                        return
+                        return False
                     if menu.is_clicked(event):
-                        menu.action()
-                        return
+                        return menu.action()
             
             pygame.display.flip()
             self.clock.tick(60)
+        return True
 
+    def loss_screen(self):
+        while self.running:
+            self.screen.fill(BLACK)
+            loss_text = self.font.render("Sorry, That's Incorrect!", True, WHITE)
+            time_text = self.font.render(f"Time: {self.timer:.1f}", True, WHITE)
+            replay = Button("Try Again", 200, 300, 200, 50, BLUE, GRAY, lambda: self.start_game(self.current_difficulty))
+            menu = Button("Main Menu", 200, 400, 200, 50, BLUE, GRAY, lambda: True)
+
+            self.screen.blit(loss_text, (WIDTH//2 - loss_text.get_width()//2, 100))
+            self.screen.blit(time_text, (WIDTH//2 - time_text.get_width()//2, 200))
+            replay.draw(self.screen)
+            menu.draw(self.screen)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quit_game(return_to_menu=True)
+                    return True
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if replay.is_clicked(event):
+                        replay.action()
+                        return False
+                    if menu.is_clicked(event):
+                        return menu.action()
+            
+            pygame.display.flip()
+            self.clock.tick(60)
+        return True
+
+#testing
 if __name__ == "__main__":
-    pygame.init()  # Testing
-    game = SudokuGame()
-    game.main_menu()
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Sudoku Adventure")
+    clock = pygame.time.Clock()
+    game = SudokuGame(screen, clock)
+    game.run()

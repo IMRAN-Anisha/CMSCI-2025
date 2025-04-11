@@ -1,6 +1,7 @@
 import random
 from source.words import *
 
+# for the word game, check for correct length.
 def start_game(self, length):
     self.word_length = length
     print(f"Starting game with {length} letters")

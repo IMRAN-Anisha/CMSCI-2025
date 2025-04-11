@@ -1,13 +1,15 @@
-# source/main.py
+# main.py
+#main game structure, putting it all together.
 import pygame
 from source.UI import *
 print("a")
-from source.maze_game import MazeGame
+from games.puzzle_game import MazeGame
 print("a")
-from games.word_game import WordGame  # Add this import
+from games.word_game import WordGame  
 print("a")
 from source.constants import WIDTH, HEIGHT
 print("a")
+from games.number_game import SudokuGame
 
 def run_game():
     pygame.init()
@@ -30,7 +32,8 @@ def run_game():
                 game = WordGame(screen, clock)  #here
                 game.run()
             elif game_choice == "number":
-                print("game")  # change
+                game = SudokuGame(screen,clock)
+                game.run()  # change
         if next_action == "instructions":
             instructions = InstructionsScreen(screen)
             instructions.run()  # fix this ASAP

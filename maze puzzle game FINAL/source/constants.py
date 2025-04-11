@@ -1,4 +1,5 @@
-#Common
+#Constants.py
+#Common within games
 WIDTH, HEIGHT = 600, 600
 
 # Colors
@@ -26,3 +27,4 @@ GRID_OFFSET_Y = 80  # Moved up from 100 to 80 for number game
 # Number game
 NUMBER_GRID_SIZE = 9  # Sudoku grid (9x9)
 NUMBER_CELL_SIZE = 50  # Sudoku cells
+

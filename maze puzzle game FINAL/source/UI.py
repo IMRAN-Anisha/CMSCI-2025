@@ -1,4 +1,5 @@
-# source/UI.py
+#shared UI that can be used in multiple games, enhances code maintainabilty,
+#keeps consistency in graphics (button design, etc.)
 import pygame
 import sys
 
