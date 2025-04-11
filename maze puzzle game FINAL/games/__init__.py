@@ -1,9 +1,9 @@
 import pygame
 import sys
 
+from games.puzzle_game import PuzzleGame 
+from games.word_game import WordGame
 from games.number_game import SudokuGame
-from games.puzzle_game import Game      
-from games.word_game import WordGame     
 
 # Initialize Pygame
 pygame.init()
@@ -81,7 +81,7 @@ class GameLauncher:
         self.main_menu()
 
     def play_maze(self):
-        maze = Game()
+        maze = PuzzleGame()
         maze.main_menu()
         # After game ends, return to main menu
         self.main_menu()
